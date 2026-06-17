@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My GitHub Projects</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card h3 { margin-top: 0; }
+        .card a { color: #0366d6; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <h1>My GitHub Menu</h1>
+    <div id="repo-list" class="grid">Loading projects...</div>
+
+    <script>
+        const username = 'YOUR_GITHUB_USERNAME';
+        
+        async function fetchRepos() {
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
+                const repos = await response.json();
+                
+                const list = document.getElementById('repo-list');
+                list.innerHTML = '';
+                
+                repos.forEach(repo => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h3>${repo.name}</h3>
+                        <p>${repo.description || 'No description available'}</p>
+                        <a href="${repo.html_url}" target="_blank">View on GitHub</a>
+                    `;
+                    list.appendChild(card);
+                });
+            } catch (error) {
+                document.getElementById('repo-list').innerText = 'Failed to load repositories.';
+            }
+        }
+
+        fetchRepos();
+    </script>
+</body>
+</html>
